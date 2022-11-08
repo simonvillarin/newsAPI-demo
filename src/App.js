@@ -1,23 +1,27 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { useState, useEffect } from "react";
+import Cards from "./components/Cards";
 
 function App() {
+  const [news, setNews] = useState([]);
+
+  const getNews = async () => {
+    const response = await fetch(
+      "https://newsapi.org/v2/everything?q=tesla&from=2022-10-08&sortBy=publishedAt&apiKey=8ce2e6a064354bbe801c1d6d2ec21d85"
+    );
+    const data = await response.json();
+    setNews(data.articles);
+  };
+
+  useEffect(() => {
+    getNews();
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="container">
+      {news.map((n) => (
+        <Cards img={n.urlToImage} title={n.title} content={n.content} />
+      ))}
     </div>
   );
 }
